@@ -22,22 +22,39 @@ const products = productsFromServer.map(product => {
   };
 });
 
-const filteredProduct = (isActive, isQuery) => {
+const filteredProduct = (isActive, isQuery, isCategory) => {
+  // console.log("active category:", isCategory);
   return products.filter(product => {
     const matchUser = !isActive || product.userName === isActive;
     const mathcQuery =
       !isQuery ||
       product.name.toLowerCase().includes(isQuery.toLowerCase().trim());
+    const matchCategory =
+      isCategory.length === 0 ||
+      isCategory.some(category => category.title === product.category);
 
-    return matchUser && mathcQuery;
+    return matchUser && mathcQuery && matchCategory;
   });
 };
 
 export const App = () => {
   const [activeUser, setActiveUser] = useState('');
   const [query, setQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState([]);
 
-  const visibleProducts = filteredProduct(activeUser, query);
+  const handleCategoryChange = category => {
+    setActiveCategory(previousCategory => {
+      if (previousCategory.includes(category)) {
+        return previousCategory.filter(cat => cat !== category);
+      }
+
+      return [...previousCategory, category];
+    });
+  };
+  // console.clear();
+  // console.log(activeCategory);
+
+  const visibleProducts = filteredProduct(activeUser, query, activeCategory);
 
   return (
     <div className="section">
@@ -46,10 +63,14 @@ export const App = () => {
 
         <Panel
           users={usersFromServer}
+          categories={categoriesFromServer}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
           setActiveUser={setActiveUser}
           activeUser={activeUser}
           setQuery={setQuery}
           query={query}
+          handleCategoryChange={handleCategoryChange}
         />
 
         <Table visibleProducts={visibleProducts} />

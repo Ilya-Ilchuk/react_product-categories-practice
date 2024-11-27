@@ -1,11 +1,16 @@
 import React from 'react';
+import { Category } from '../category/category';
 
 export const Panel = ({
   users,
+  categories,
   setActiveUser,
   activeUser,
   setQuery,
   query,
+  activeCategory,
+  setActiveCategory,
+  handleCategoryChange,
 }) => {
   return (
     <div className="block">
@@ -70,30 +75,12 @@ export const Panel = ({
           </p>
         </div>
 
-        <div className="panel-block is-flex-wrap-wrap">
-          <a
-            href="#/"
-            data-cy="AllCategories"
-            className="button is-success mr-6 is-outlined"
-          >
-            All
-          </a>
-
-          <a data-cy="Category" className="button mr-2 my-1 is-info" href="#/">
-            Category 1
-          </a>
-
-          <a data-cy="Category" className="button mr-2 my-1" href="#/">
-            Category 2
-          </a>
-
-          <a data-cy="Category" className="button mr-2 my-1 is-info" href="#/">
-            Category 3
-          </a>
-          <a data-cy="Category" className="button mr-2 my-1" href="#/">
-            Category 4
-          </a>
-        </div>
+        <Category
+          categories={categories}
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+          handleCategoryChange={handleCategoryChange}
+        />
 
         <div className="panel-block">
           <a
