@@ -1,6 +1,12 @@
 import React from 'react';
 
-export const Panel = ({ users, setActiveUser, activeUser }) => {
+export const Panel = ({
+  users,
+  setActiveUser,
+  activeUser,
+  setQuery,
+  query,
+}) => {
   return (
     <div className="block">
       <nav className="panel">
@@ -34,11 +40,14 @@ export const Panel = ({ users, setActiveUser, activeUser }) => {
         <div className="panel-block">
           <p className="control has-icons-left has-icons-right">
             <input
+              onChange={text => {
+                setQuery(text.target.value);
+              }}
               data-cy="SearchField"
               type="text"
               className="input"
               placeholder="Search"
-              value="qwe"
+              value={query}
             />
 
             <span className="icon is-left">
@@ -47,7 +56,16 @@ export const Panel = ({ users, setActiveUser, activeUser }) => {
 
             <span className="icon is-right">
               {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-              <button data-cy="ClearButton" type="button" className="delete" />
+              {query ? (
+                <button
+                  data-cy="ClearButton"
+                  type="button"
+                  className="delete"
+                  onClick={() => {
+                    setQuery('');
+                  }}
+                />
+              ) : null}
             </span>
           </p>
         </div>
@@ -82,6 +100,10 @@ export const Panel = ({ users, setActiveUser, activeUser }) => {
             data-cy="ResetAllButton"
             href="#/"
             className="button is-link is-outlined is-fullwidth"
+            onClick={() => {
+              setActiveUser('');
+              setQuery('');
+            }}
           >
             Reset all filters
           </a>

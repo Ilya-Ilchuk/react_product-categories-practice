@@ -5,8 +5,8 @@ import './App.scss';
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
-import { Product } from './components/product/product';
 import { Panel } from './components/panel/panel';
+import { Table } from './components/table/table';
 
 const products = productsFromServer.map(product => {
   const category = categoriesFromServer.find(c => c.id === product.categoryId); // find by product.categoryId
@@ -22,20 +22,22 @@ const products = productsFromServer.map(product => {
   };
 });
 
+const filteredProduct = (isActive, isQuery) => {
+  return products.filter(product => {
+    const matchUser = !isActive || product.userName === isActive;
+    const mathcQuery =
+      !isQuery ||
+      product.name.toLowerCase().includes(isQuery.toLowerCase().trim());
+
+    return matchUser && mathcQuery;
+  });
+};
+
 export const App = () => {
   const [activeUser, setActiveUser] = useState('');
+  const [query, setQuery] = useState('');
 
-  // console.log(activeUser);
-
-  const filteredUser = () => {
-    if (!activeUser) {
-      return products;
-    }
-
-    return [...products].filter(user => user.userName === activeUser);
-  };
-
-  console.log(filteredUser);
+  const visibleProducts = filteredProduct(activeUser, query);
 
   return (
     <div className="section">
@@ -46,72 +48,11 @@ export const App = () => {
           users={usersFromServer}
           setActiveUser={setActiveUser}
           activeUser={activeUser}
+          setQuery={setQuery}
+          query={query}
         />
 
-        <div className="box table-container">
-          <p data-cy="NoMatchingMessage">
-            No products matching selected criteria
-          </p>
-
-          <table
-            data-cy="ProductTable"
-            className="table is-striped is-narrow is-fullwidth"
-          >
-            <thead>
-              <tr>
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    ID
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    Product
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort-down" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    Category
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort-up" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    User
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filteredUser().map(product => (
-                <Product key={product.id} product={product} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <Table visibleProducts={visibleProducts} />
       </div>
     </div>
   );
