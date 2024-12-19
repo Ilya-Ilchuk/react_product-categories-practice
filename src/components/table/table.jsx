@@ -1,7 +1,14 @@
-import React from 'react';
 import { Product } from '../product/product';
 
-export const Table = ({ visibleProducts }) => {
+export const Table = ({ visibleProducts, setSelectedItem }) => {
+  const tableRowItems = ['ID', 'Product', 'Category', 'User'];
+
+  const arrowIcons = {
+    default: 'fas fa-sort',
+    arrowIsDown: 'fas fa-sort-down',
+    arrowIsUp: 'fas fa-sort-up',
+  };
+
   return (
     <div className="box table-container">
       {!visibleProducts.length ? (
@@ -15,49 +22,22 @@ export const Table = ({ visibleProducts }) => {
         >
           <thead>
             <tr>
-              <th>
-                <span className="is-flex is-flex-wrap-nowrap">
-                  ID
-                  <a href="#/">
-                    <span className="icon">
-                      <i data-cy="SortIcon" className="fas fa-sort" />
-                    </span>
-                  </a>
-                </span>
-              </th>
-
-              <th>
-                <span className="is-flex is-flex-wrap-nowrap">
-                  Product
-                  <a href="#/">
-                    <span className="icon">
-                      <i data-cy="SortIcon" className="fas fa-sort-down" />
-                    </span>
-                  </a>
-                </span>
-              </th>
-
-              <th>
-                <span className="is-flex is-flex-wrap-nowrap">
-                  Category
-                  <a href="#/">
-                    <span className="icon">
-                      <i data-cy="SortIcon" className="fas fa-sort-up" />
-                    </span>
-                  </a>
-                </span>
-              </th>
-
-              <th>
-                <span className="is-flex is-flex-wrap-nowrap">
-                  User
-                  <a href="#/">
-                    <span className="icon">
-                      <i data-cy="SortIcon" className="fas fa-sort" />
-                    </span>
-                  </a>
-                </span>
-              </th>
+              {tableRowItems.map(item => (
+                <th key={item}>
+                  <span className="is-flex is-flex-wrap-nowrap">
+                    {item}
+                    <a href="#/">
+                      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
+                      <span
+                        className="icon"
+                        onClick={() => setSelectedItem(item)}
+                      >
+                        <i data-cy="SortIcon" className={arrowIcons.default} />
+                      </span>
+                    </a>
+                  </span>
+                </th>
+              ))}
             </tr>
           </thead>
 

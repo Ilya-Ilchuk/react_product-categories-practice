@@ -22,25 +22,42 @@ const products = productsFromServer.map(product => {
   };
 });
 
-const filteredProduct = (isActive, isQuery, isCategory) => {
-  // console.log("active category:", isCategory);
-  return products.filter(product => {
+const filteredProduct = (isActive, isQuery, isCategory, isSelectedItem) => {
+  const result = products.filter(product => {
     const matchUser = !isActive || product.userName === isActive;
-    const mathcQuery =
+    const mathQuery =
       !isQuery ||
       product.name.toLowerCase().includes(isQuery.toLowerCase().trim());
     const matchCategory =
       isCategory.length === 0 ||
       isCategory.some(category => category.title === product.category);
 
-    return matchUser && mathcQuery && matchCategory;
+    return matchUser && mathQuery && matchCategory;
   });
+
+  result.sort((a, b) => {
+    switch (isSelectedItem) {
+      case 'ID':
+        return b.id - a.id;
+      case 'Product':
+        return a.name.localeCompare(b.name);
+      case 'Category':
+        return a.category.localeCompare(b.category);
+      case 'User':
+        return a.userName.localeCompare(b.userName);
+      default:
+        return '';
+    }
+  });
+
+  return result;
 };
 
 export const App = () => {
   const [activeUser, setActiveUser] = useState('');
   const [query, setQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState([]);
+  const [selectedItem, setSelectedItem] = useState('');
 
   const handleCategoryChange = category => {
     setActiveCategory(previousCategory => {
@@ -51,10 +68,13 @@ export const App = () => {
       return [...previousCategory, category];
     });
   };
-  // console.clear();
-  // console.log(activeCategory);
 
-  const visibleProducts = filteredProduct(activeUser, query, activeCategory);
+  const visibleProducts = filteredProduct(
+    activeUser,
+    query,
+    activeCategory,
+    selectedItem,
+  );
 
   return (
     <div className="section">
@@ -71,9 +91,13 @@ export const App = () => {
           setQuery={setQuery}
           query={query}
           handleCategoryChange={handleCategoryChange}
+          setSelectedItem={setSelectedItem}
         />
 
-        <Table visibleProducts={visibleProducts} />
+        <Table
+          visibleProducts={visibleProducts}
+          setSelectedItem={setSelectedItem}
+        />
       </div>
     </div>
   );

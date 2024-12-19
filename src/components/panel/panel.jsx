@@ -11,6 +11,7 @@ export const Panel = ({
   activeCategory,
   setActiveCategory,
   handleCategoryChange,
+  setSelectedItem,
 }) => {
   return (
     <div className="block">
@@ -90,6 +91,8 @@ export const Panel = ({
             onClick={() => {
               setActiveUser('');
               setQuery('');
+              setActiveCategory([]);
+              setSelectedItem('');
             }}
           >
             Reset all filters
